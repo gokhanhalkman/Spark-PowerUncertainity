@@ -229,6 +229,7 @@ namespace WindowsFormsApp1
         }
 
         List<double> measuredPowers = new List<double>();
+
         private void button3_Click(object sender, EventArgs e)
         {
             if (!textBox2.Text.Equals(""))
