@@ -60,27 +60,75 @@ namespace WindowsFormsApp1
             }
             else
             {
-                label36.Text = "";
+                if (textBox5.Text.Equals("")|| textBox7.Text.Equals("") || textBox8.Text.Equals("") || textBox12.Text.Equals("") || textBox18.Text.Equals(""))
+                {
+                    label36.Text = "Inputs cannot be left empty";
+                }
+                else
+                {
+                    label36.Text = "";
 
-                frequency = ReadFrequency();
-                ReadValues();
-                //GetDataFromExcell(); //Power
+                    frequency = ReadFrequency();
+                    ReadValues();
+                    //GetDataFromExcell(); //Power
 
-                WriteCalibrationFactorAndUncertainty();
-                WriteReferencePower();
+                    //WriteCalibrationFactorAndUncertainty();
+                    //WriteReferencePower();
 
-                CalculateUncertainties();
-                CalculateSensitivityCoefficents();
-                CalculatePartialVariances();
-                CalculateTotalVariance();
+                    Simulate();
 
-                WriteUncertainties();
+                    //CalculateUncertainties();
+                    //CalculateSensitivityCoefficents();
+                    //CalculatePartialVariances();
+                    //CalculateTotalVariance();
 
-                textBox13.Text = Po.ToString();
-                textBox14.Text = sigma.ToString();
+                    WriteUncertainties();
 
-                //ListResults();
+                    textBox13.Text = Po.ToString();
+                    textBox14.Text = sigma.ToString();
+
+                    //ListResults();
+                }
+
             }
+        }
+
+        void Simulate()
+        {
+            WriteCalibrationFactorAndUncertainty();
+            WriteReferencePower();
+
+            UPo = sigma / Math.Sqrt(N);
+            UMs = 2 * rhoPS * rhoSG * 1.5; //connector loss
+            //UCFstd //interpolated with calibration factor
+            UPm = (accuracy * Po) / nominalValue; //1mW reference
+            UPmacc = 0.005 * Po;
+            ULps = 0.0025;
+
+            CPo = Ms / (CFstd * Lps); //
+            CPm = Ms / (CFstd * Lps); //
+            CPmacc = Ms / (CFstd * Lps);
+            CMs = (Po + DeltaPm + DeltaPmacc) / (CFstd * Lps );
+            CCFstd = ((-1) * (Po + DeltaPm + DeltaPmacc) * Ms) / (Math.Pow(CFstd, 2) * Lps);
+            CLps = ((-1) * (Po + DeltaPm + DeltaPmacc) * Ms) / (Math.Pow(Lps, 2) * CFstd);
+
+            PVPo = Math.Pow(UPo * 1 * CPo, 2);               //k=1
+            PVCFstd = Math.Pow(UCFstd * 0.5 * CCFstd, 2);    //k=1/2
+            PVMs = Math.Pow(UMs * 0.707 * CMs, 2);           //k=1/root2
+            PVPm = Math.Pow(UPm * 0.577 * CPm, 2);           //k=1/root3
+            PVPmacc = Math.Pow(UPmacc * 0.577 * CPmacc, 2);  //k=1/root3
+            PVLps = Math.Pow(ULps * 0.577 * CLps, 2);        //k=1/root3
+
+            TV = PVPo + PVMs + PVCFstd + PVPm + PVPmacc + PVLps;
+            textBox15.Text = TV.ToString();
+            StdUnc = Math.Sqrt(TV);
+            textBox16.Text = StdUnc.ToString();
+            ExtUnc = 2 * StdUnc; // 2 --> kapsam aralığı
+            textBox10.Text = ExtUnc.ToString();
+            DecRelUnc = ExtUnc / Pref;
+
+            textBox17.Text = Po.ToString() + "\u00B1" + ExtUnc.ToString();
+
         }
         List<double> extuncerts = new List<double>();
 
@@ -175,7 +223,7 @@ namespace WindowsFormsApp1
         {
             
             Ms = textBox4.Text.Equals("") ? 1 : Convert.ToInt32(textBox4.Text);
-            DeltaPm = textBox3.Text.Equals("") ? 0 : Convert.ToInt32(textBox3.Text);
+            DeltaPm = textBox3.Text.Equals("") ? 1 : Convert.ToInt32(textBox3.Text);
             DeltaPmacc = textBox1.Text.Equals("") ? 0 : Convert.ToInt32(textBox1.Text);
             Lps = textBox11.Text.Equals("") ? 1 : Convert.ToInt32(textBox11.Text);
 
@@ -229,11 +277,6 @@ namespace WindowsFormsApp1
         }
 
         List<double> measuredPowers = new List<double>();
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
 
         private void button3_Click(object sender, EventArgs e)
         {
