@@ -19,7 +19,6 @@ C:\Users\gokhanhalkman\Desktop\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\Windo
 C:\Users\gokhanhalkman\Desktop\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.exe
 C:\Users\gokhanhalkman\Desktop\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.pdb
 C:\Users\gokhanhalkman\source\repos\WindowsForms_Voltage\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csprojAssemblyReference.cache
-C:\Users\gokhanhalkman\source\repos\WindowsForms_Voltage\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.Form1.resources
 C:\Users\gokhanhalkman\source\repos\WindowsForms_Voltage\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.Properties.Resources.resources
 C:\Users\gokhanhalkman\source\repos\WindowsForms_Voltage\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.GenerateResource.cache
 C:\Users\gokhanhalkman\source\repos\WindowsForms_Voltage\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.CoreCompileInputs.cache
@@ -28,3 +27,6 @@ C:\Users\gokhanhalkman\source\repos\WindowsForms_Voltage\WindowsFormsApp1\obj\De
 C:\Users\gokhanhalkman\source\repos\WindowsForms_Voltage\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.exe.config
 C:\Users\gokhanhalkman\source\repos\WindowsForms_Voltage\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.exe
 C:\Users\gokhanhalkman\source\repos\WindowsForms_Voltage\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.pdb
+C:\Users\gokhanhalkman\source\repos\WindowsForms_Voltage\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.Form2_Login.resources
+C:\Users\gokhanhalkman\source\repos\WindowsForms_Voltage\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.Form3_TestSelection.resources
+C:\Users\gokhanhalkman\source\repos\WindowsForms_Voltage\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.Form1_Power.resources

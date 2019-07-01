@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace WindowsFormsApp1
 {
-    public partial class Form1 : Form
+    public partial class Form1_Power : Form
     {
         
         double frequency;
@@ -49,6 +49,9 @@ namespace WindowsFormsApp1
         double StdUnc; //Standard uncertainty
         double ExtUnc; //Extended uncertainty
         double DecRelUnc; //Decleration of relative uncertainty
+        double trustabilityRatio = 1;
+
+        string warning = "";
 
         // // // // // // // // // // // // // // // // // // // // // // 
         private void button1_Click(object sender, EventArgs e) //Start
@@ -56,41 +59,36 @@ namespace WindowsFormsApp1
             AddMeasuredPowers(); // average, standerd deviation
             if(measuredPowers.Count < 3)
             {
-                label36.Text = "Not enough power samples";           
+               warning = "Not enough power samples";           
             }
             else
             {
                 if (textBox5.Text.Equals("")|| textBox7.Text.Equals("") || textBox8.Text.Equals("") || textBox12.Text.Equals("") || textBox18.Text.Equals(""))
                 {
-                    label36.Text = "Inputs cannot be left empty";
+                    warning = "Inputs cannot be left empty";
                 }
                 else
                 {
                     label36.Text = "";
 
                     frequency = ReadFrequency();
+                    trustabilityRatio = ReadTrustabilityRatio();  
                     ReadValues();
-                    //GetDataFromExcell(); //Power
 
-                    //WriteCalibrationFactorAndUncertainty();
-                    //WriteReferencePower();
 
                     Simulate();
 
-                    //CalculateUncertainties();
-                    //CalculateSensitivityCoefficents();
-                    //CalculatePartialVariances();
-                    //CalculateTotalVariance();
-
                     WriteUncertainties();
 
-                    textBox13.Text = Po.ToString();
-                    textBox14.Text = sigma.ToString();
+                    textBox13.Text = Po.ToString("0.00000E00");
+                    textBox14.Text = sigma.ToString("0.00000E00");
 
                     //ListResults();
                 }
 
             }
+
+            label36.Text = warning;
         }
 
         void Simulate()
@@ -120,14 +118,16 @@ namespace WindowsFormsApp1
             PVLps = Math.Pow(ULps * 0.577 * CLps, 2);        //k=1/root3
 
             TV = PVPo + PVMs + PVCFstd + PVPm + PVPmacc + PVLps;
-            textBox15.Text = TV.ToString();
+            textBox15.Text = TV.ToString("0.00000E00");
             StdUnc = Math.Sqrt(TV);
-            textBox16.Text = StdUnc.ToString();
-            ExtUnc = 2 * StdUnc; // 2 --> kapsam aralığı
-            textBox10.Text = ExtUnc.ToString();
+            textBox16.Text = StdUnc.ToString("0.00000E00");
+
+            ExtUnc = trustabilityRatio * StdUnc; // kapsam aralığı
+            textBox10.Text = ExtUnc.ToString("0.00000E00");
             DecRelUnc = ExtUnc / Pref;
 
-            textBox17.Text = Po.ToString() + "\u00B1" + ExtUnc.ToString();
+            textBox17.Text = Po.ToString("0.00000E00");
+            textBox19.Text = ExtUnc.ToString("0.00000E00");
 
         }
         List<double> extuncerts = new List<double>();
@@ -140,10 +140,6 @@ namespace WindowsFormsApp1
                 WriteCalibrationFactorAndUncertainty();
                 WriteReferencePower();
 
-                CalculateUncertainties();
-                CalculateSensitivityCoefficents();
-                CalculatePartialVariances();
-                CalculateTotalVariance();
                 extuncerts.Add(ExtUnc);
             }
 
@@ -181,67 +177,27 @@ namespace WindowsFormsApp1
             label31.Text = PVLps.ToString();
         }
 
-        void CalculateTotalVariance()
-        {
-            TV = PVPo + PVMs + PVCFstd + PVPm + PVPmacc + PVLps;
-            textBox15.Text = TV.ToString();
-            StdUnc = Math.Sqrt(TV);
-            textBox16.Text = StdUnc.ToString();
-            ExtUnc = 2 * StdUnc; // 2 --> kapsam aralığı
-            textBox10.Text = ExtUnc.ToString();
-            DecRelUnc = ExtUnc / Pref;
-
-            textBox17.Text = Po.ToString() + "\u00B1" + ExtUnc.ToString();
-        }
-        
-        void CalculateUncertainties()
-        {
-            UPo =    sigma / Math.Sqrt(N);
-            UMs =    2 * rhoPS * rhoSG*1.5; //connector loss
-            //UCFstd
-            UPm =    ( accuracy * Po) / nominalValue; //1mW reference
-            UPmacc = 0.005*Po;
-            ULps =   0.0025;
-        }
 
 
         void WriteReferencePower()
         {
             Pref =( (Po + DeltaPm + DeltaPmacc) * Ms) / (Lps * CFstd);
-            textBox6.Text = Pref.ToString();
+            textBox6.Text = Pref.ToString("0.00000E00");
         }
-
-       /* void GetDataFromExcell()
-        {
-            //Currently read from form, later from excell
-            Po = Convert.ToDouble(textBox2.Text);
-
-
-        }*/
+        
 
         void ReadValues()
         {
             
-            Ms = textBox4.Text.Equals("") ? 1 : Convert.ToInt32(textBox4.Text);
-            DeltaPm = textBox3.Text.Equals("") ? 1 : Convert.ToInt32(textBox3.Text);
-            DeltaPmacc = textBox1.Text.Equals("") ? 0 : Convert.ToInt32(textBox1.Text);
-            Lps = textBox11.Text.Equals("") ? 1 : Convert.ToInt32(textBox11.Text);
+            Ms = textBox4.Text.Equals("") ? 1 : Convert.ToDouble(textBox4.Text);
+            DeltaPm = textBox3.Text.Equals("") ? 1 : Convert.ToDouble(textBox3.Text);
+            DeltaPmacc = textBox1.Text.Equals("") ? 0 : Convert.ToDouble(textBox1.Text);
+            Lps = textBox11.Text.Equals("") ? 1 : Convert.ToDouble(textBox11.Text);
 
             rhoSG = Convert.ToDouble(textBox8.Text);
             rhoPS = Convert.ToDouble(textBox7.Text);
             nominalValue = Convert.ToDouble(textBox5.Text);
             accuracy = Convert.ToDouble(textBox18.Text);
-        }
-
-
-        void CalculatePartialVariances()
-        {
-            PVPo =    Math.Pow(UPo * 1 * CPo, 2);               //k=1
-            PVCFstd = Math.Pow(UCFstd * 0.5 * CCFstd, 2);    //k=1/2
-            PVMs =    Math.Pow(UMs * 0.707 * CMs, 2);           //k=1/root2
-            PVPm =    Math.Pow(UPm * 0.577 * CPm, 2);           //k=1/root3
-            PVPmacc = Math.Pow(UPmacc * 0.577 * CPmacc, 2);  //k=1/root3
-            PVLps =   Math.Pow(ULps * 0.577 * CLps, 2);        //k=1/root3
         }
 
         private void button2_Click(object sender, EventArgs e) //Clear
@@ -276,29 +232,42 @@ namespace WindowsFormsApp1
             measuredPowers.Clear();
         }
 
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        public int aaa()
+        {
+            return 0;
+        }
+
         List<double> measuredPowers = new List<double>();
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            Form2_Login.f3.Show();
+            this.Close();
+
+            
+        }
 
         private void button3_Click(object sender, EventArgs e)
         {
             if (!textBox2.Text.Equals(""))
             {
-                double pow = Convert.ToDouble(textBox2.Text);
-                //measuredPowers.Add(pow);
+                listBox1.Items.Add(textBox2.Text);
                 textBox2.Text = "";
-                listBox1.Items.Add(pow);
-                //listBox1.Height = measuredPowers.Count * listBox1.Font.Height;
-                //if (measuredPowers.Count <= 5) listBox1.Height = 5 * listBox1.Font.Height;
             }
-            
         }
 
         private void AddMeasuredPowers()
         {
             N = 0; Po = 0; sigma = 0;
             measuredPowers.Clear();
-            foreach(double pow in listBox1.Items)
+            foreach(string pow in listBox1.Items)
             {
-                measuredPowers.Add(pow);
+                measuredPowers.Add(Double.Parse(pow, System.Globalization.NumberStyles.Float));
             }
             N = measuredPowers.Count;
             foreach (double power in measuredPowers) { Po += power / N; }
@@ -307,25 +276,15 @@ namespace WindowsFormsApp1
             sigma = Math.Sqrt(sumOfDiffrences / (N - 1));
         }
 
-
-        void CalculateSensitivityCoefficents()
-        {
-            CPo =     Ms / (CFstd * Lps); //
-            CPm =     Ms / (CFstd * Lps); //
-            CPmacc =  Ms / (CFstd * Lps);
-            CMs =    (Po + DeltaPm + DeltaPmacc) / (CFstd * Lps);
-            CCFstd = ((-1) * (Po + DeltaPm + DeltaPmacc) * Ms )/ (Math.Pow(CFstd, 2) * Lps);
-            CLps =   ((-1) * (Po + DeltaPm + DeltaPmacc) * Ms )/ (Math.Pow(Lps, 2) * CFstd);
-        }
- 
         List<long> knownFrequencies = new List<long>();
         List<double> calFactors = new List<double>();
         List<double> calFacUncerts = new List<double>();        
 
-        public Form1()
+        public Form1_Power()
         {
             InitializeComponent();
             MakeKnownList(knownFrequencies, calFactors, calFacUncerts);
+
         }
 
         private void MakeKnownList(List<long> kf, List<double> cf, List<double> cfu)
@@ -372,6 +331,21 @@ namespace WindowsFormsApp1
             else return 0;
         }
 
+        double ReadTrustabilityRatio()
+        {
+            if (comboBox2.Text.Equals("68,27%")) return 1;
+            else if (comboBox2.Text.Equals("90%")) return 1.645;
+            else if (comboBox2.Text.Equals("95%")) return 1.96;
+            else if (comboBox2.Text.Equals("95,45% (suggested)")) return 2;
+            else if (comboBox2.Text.Equals("99%")) return 2.576;
+            else if (comboBox2.Text.Equals("99,73%")) return 3;
+            else
+            {
+                warning = "Scope interval is not valid";
+                return 1;
+            }
+        }
+
         bool WriteCalibrationFactorAndUncertainty()
         {
             double cf = 0;
@@ -398,7 +372,7 @@ namespace WindowsFormsApp1
                     cfu = Interpolate(knownFrequencies[i], knownFrequencies[i+1], calFacUncerts[i], calFacUncerts[i+1], frequency);
                     CFstd = cf;
                     UCFstd = cfu;
-                    textBox9.Text = CFstd.ToString();
+                    textBox9.Text = CFstd.ToString("0.00000E00");
                     return true;
                 }
             }
