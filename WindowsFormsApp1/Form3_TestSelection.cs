@@ -17,12 +17,19 @@ namespace WindowsFormsApp1
             InitializeComponent();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e) //power
         {
             Form1_Power f1 = new Form1_Power();
             f1.Show();
             this.Hide();
 
+        }
+
+        private void button1_Click(object sender, EventArgs e) //frequency
+        {
+            Form4_Frequency f4 = new Form4_Frequency();
+            f4.Show();
+            this.Hide();
         }
     }
 }

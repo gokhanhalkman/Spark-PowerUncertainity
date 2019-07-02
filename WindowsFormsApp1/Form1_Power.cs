@@ -246,7 +246,9 @@ namespace WindowsFormsApp1
 
         private void button5_Click(object sender, EventArgs e)
         {
+            //An instance of Form 3 is already created on Form 2 and hid (not closed) when test is selected
             Form2_Login.f3.Show();
+            //When new test is clicked this instance is disposed
             this.Close();
 
             

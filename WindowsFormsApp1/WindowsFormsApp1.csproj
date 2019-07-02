@@ -64,6 +64,12 @@
     <Compile Include="Form3_TestSelection.Designer.cs">
       <DependentUpon>Form3_TestSelection.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form4_Frequency.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form4_Frequency.Designer.cs">
+      <DependentUpon>Form4_Frequency.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1_Power.resx">
@@ -74,6 +80,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form3_TestSelection.resx">
       <DependentUpon>Form3_TestSelection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form4_Frequency.resx">
+      <DependentUpon>Form4_Frequency.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
