@@ -62,8 +62,6 @@ namespace WindowsFormsApp1
                     trustabilityRatio = ReadTrustabilityRatio();  
                     ReadParameters();
 
-                    Simulate();
-
                     textBox13.Text = Fo.ToString("0.00000E00");
                     textBox14.Text = sigma.ToString("0.00000E00");
 
@@ -74,44 +72,7 @@ namespace WindowsFormsApp1
             label36.Text = warning;
         }
 
-        void Simulate()
-        {
-            WriteReferenceFrequency();
-
-            /*UPo = sigma / Math.Sqrt(N);
-            UMs = 2 * rhoPS * rhoSG * 1.5; //connector loss
-            //UCFstd //interpolated with calibration factor
-            UPm = (accuracy * Po) / nominalValue; //1mW reference
-            UPmacc = 0.005 * Po;
-            ULps = 0.0025;
-
-            CPo = Ms / (CFstd * Lps); //
-            CPm = Ms / (CFstd * Lps); //
-            CPmacc = Ms / (CFstd * Lps);
-            CMs = (Po + DeltaPm + DeltaPmacc) / (CFstd * Lps );
-            CCFstd = ((-1) * (Po + DeltaPm + DeltaPmacc) * Ms) / (Math.Pow(CFstd, 2) * Lps);
-            CLps = ((-1) * (Po + DeltaPm + DeltaPmacc) * Ms) / (Math.Pow(Lps, 2) * CFstd);
-
-            PVPo = Math.Pow(UPo * 1 * CPo, 2);               //k=1
-            PVCFstd = Math.Pow(UCFstd * 0.5 * CCFstd, 2);    //k=1/2
-            PVMs = Math.Pow(UMs * 0.707 * CMs, 2);           //k=1/root2
-            PVPm = Math.Pow(UPm * 0.577 * CPm, 2);           //k=1/root3
-            PVPmacc = Math.Pow(UPmacc * 0.577 * CPmacc, 2);  //k=1/root3
-            PVLps = Math.Pow(ULps * 0.577 * CLps, 2);        //k=1/root3
-
-            TV = PVPo + PVMs + PVCFstd + PVPm + PVPmacc + PVLps;
-            textBox15.Text = TV.ToString("0.00000E00");
-            StdUnc = Math.Sqrt(TV);
-            textBox16.Text = StdUnc.ToString("0.00000E00");
-
-            ExtUnc = trustabilityRatio * StdUnc; // kapsam aralığı
-            textBox10.Text = ExtUnc.ToString("0.00000E00");
-            DecRelUnc = ExtUnc / Pref;
-
-            textBox17.Text = Po.ToString("0.00000E00");
-            textBox19.Text = ExtUnc.ToString("0.00000E00");*/
-
-        }
+        
         List<double> extuncerts = new List<double>();
 
 

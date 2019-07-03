@@ -25,8 +25,6 @@ namespace WindowsFormsApp1
         {
             //userDatabase.Add("username", "password");
             userDatabase.Add("aydin", "123456");
-            userDatabase.Add("mahdi", "456789");
-            userDatabase.Add("atakan", "789123");
             userDatabase.Add("gokhan", "123456");
         }
         public static Form3_TestSelection f3;
