@@ -15,7 +15,7 @@ namespace WindowsFormsApp1
         
         double frequency;
 
-        double Fo, Fx, correctedFrequency; //Average, reference, measured frequency
+        double Fo, correctedFrequency; //Average, reference, measured frequency
         double sigma, N; //standart deviation, arithmetic average
 
         bool isSinus; //sinus 1, square 0
@@ -23,7 +23,7 @@ namespace WindowsFormsApp1
         double gateTime; // sec
         double fallRiseTime; // nanosec
         double amplitude; // Vpp
-        double noiseOfCounter, noiseOfPulse; // V
+        double noiseOfCounter, noiseOfSignGenerator; // V
         double slewRate; // V/s
         double tJitter, tAcc; // s, when f < 225MHz
         double tRes, tTrigger; //s
@@ -31,14 +31,14 @@ namespace WindowsFormsApp1
         double resolutionUncert, timeBaseAccuracyUncert, timeBaseEffectUncert;
         double systematicUncert;
         double extendedUncert;
-        double decleration, certificateValue;
 
         double heatEffect, aging, lineVoltage;
-        double slope, constant;
 
         double trustabilityRatio = 1;
 
         string warning = "";
+
+        bool isHighFrequency = false;
 
         // // // // // // // // // // // // // // // // // // // // // // 
         private void button1_Click(object sender, EventArgs e) //Start
@@ -62,19 +62,19 @@ namespace WindowsFormsApp1
                     trustabilityRatio = ReadTrustabilityRatio();  
                     ReadParameters();
 
-                    textBox13.Text = Fo.ToString("0.00000E00");
-                    textBox14.Text = sigma.ToString("0.00000E00");
-                    textBox10.Text = extendedUncert.ToString("0.00000E00");
+                    textBox13.Text = Fo.ToString("0.00E00");
+                    textBox14.Text = sigma.ToString("0.00E00");
+                    textBox10.Text = extendedUncert.ToString("0.00E00");
 
                     correctedFrequency = Fo * (1 + 0.000000000002);
-                    textBox6.Text = correctedFrequency.ToString("0.00000E00");
+                    textBox6.Text = correctedFrequency.ToString("0.00E00");
                 }
             }
 
             label36.Text = warning;
 
-            textBox17.Text = Fo.ToString();
-            textBox19.Text = extendedUncert.ToString();
+            textBox17.Text = Fo.ToString("0.00E00");
+            textBox19.Text = extendedUncert.ToString("0.00E00");
         }
 
         // // // // // // // // // // // // // // // // // // // // // //
@@ -91,79 +91,99 @@ namespace WindowsFormsApp1
                 warning = "Wave type is not valid";
             }
 
-            if (Fo < 255000000)
-                gateTime = 10;
-            else if (Fo < 5000000000)
-                gateTime = 1;
-            else if (Fo < 5700000000)
-                gateTime = 0.2;
-            else if (Fo < 11300000000)
-                gateTime = 0.4;
-            else if (Fo < 16900000000)
-                gateTime = 0.6;
-            else if (Fo < 22500000000)
-                gateTime = 0.8;
-            else
-                gateTime = 1;
+            gateTime = Convert.ToDouble(textBox3.Text);
+            fallRiseTime = Double.Parse(textBox5.Text, System.Globalization.NumberStyles.Float);
 
-            label4.Text = gateTime.ToString();
+            tRes = Double.Parse(textBox12.Text, System.Globalization.NumberStyles.Float);
+            timeBaseAccuracyUncert = Double.Parse(textBox11.Text, System.Globalization.NumberStyles.Float);
 
-            fallRiseTime = 2; //ns
+            heatEffect = Double.Parse(textBox9.Text, System.Globalization.NumberStyles.Float);
+            aging = Double.Parse(textBox24.Text, System.Globalization.NumberStyles.Float);
+            lineVoltage = Double.Parse(textBox23.Text, System.Globalization.NumberStyles.Float);
 
+            triggerLevel = Double.Parse(textBox1.Text, System.Globalization.NumberStyles.Float);
+            amplitude = Double.Parse(textBox4.Text, System.Globalization.NumberStyles.Float);
 
-            tRes = 0.0000000002;
+            noiseOfCounter = Double.Parse(textBox8.Text, System.Globalization.NumberStyles.Float);
+            noiseOfSignGenerator = Double.Parse(textBox7.Text, System.Globalization.NumberStyles.Float);
 
-
-            timeBaseAccuracyUncert = 0.00000000002;
-            heatEffect = 0.00000000002;
-            aging = 0.00000000002;
-            lineVoltage = 0;
-
-            if (Fo < 255000000)
+            if (!isHighFrequency)
             {
-                triggerLevel = 0.5;
-                noiseOfCounter = 0.00035;
-                noiseOfPulse = 0.00035;
-                amplitude = 10 * Math.Sqrt(2);
-                tJitter = 0.000000000003;
-                tAcc = 0.00000000001;
-                slope = 0; //not used
-                constant = 0; //not used
-                decleration = slope * Fo + 0.000002; //not used
+                tJitter = Double.Parse(textBox15.Text, System.Globalization.NumberStyles.Float);
+                tAcc = Double.Parse(textBox22.Text, System.Globalization.NumberStyles.Float);
             }
             else
             {
-                triggerLevel = 0;
-                noiseOfCounter = 0.0001;
-                noiseOfPulse = 0.0001;
-                amplitude = 11 * Math.Sqrt(2);
-                tJitter = 0; //not used
-                tAcc = 0; //not used
-                slope = 0; //not used
-                constant = 0; //not used
-                decleration = 0; //not used
+                tJitter = 0;
+                tAcc = 0;
             }
-
 
             slewRate = isSinus ? Math.PI * Fo * amplitude * Math.Cos(Math.Asin(2 * triggerLevel / amplitude)) : amplitude * 0.8 * Math.Pow(10, 9) / fallRiseTime;
-            label7.Text = slewRate.ToString();
 
-            tTrigger = Math.Sqrt(Math.Pow(noiseOfCounter, 2) + Math.Pow(noiseOfPulse, 2)) / slewRate;
-            label5.Text = tTrigger.ToString();
+            tTrigger = Math.Sqrt(Math.Pow(noiseOfCounter, 2) + Math.Pow(noiseOfSignGenerator, 2)) / slewRate;
 
             resolutionUncert = Fo < 255000000 ? Math.Sqrt((24 * Math.Pow(tRes, 2) + 32 * Math.Pow(tTrigger, 2)) / N  + 2 * Math.Pow(tJitter, 2)) / gateTime : Math.Sqrt(Math.Pow(1 / Fo, 2) + Math.Pow(1.4 * tTrigger / gateTime, 2));
-            label1.Text = resolutionUncert.ToString();
 
 
             timeBaseEffectUncert = Math.Sqrt(Math.Pow(heatEffect, 2) + Math.Pow(aging, 2) + Math.Pow(lineVoltage, 2));
             systematicUncert = tAcc / gateTime;
             extendedUncert = trustabilityRatio * Math.Sqrt(Math.Pow(sigma, 2) + Math.Pow(resolutionUncert * Fo , 2)/3 + Math.Pow(systematicUncert * Fo, 2) / 3 + Math.Pow(timeBaseAccuracyUncert * Fo, 2) + Math.Pow(timeBaseEffectUncert * Fo, 2) / 3);
 
-
-
-
         }
 
+        private void textBox20_TextChanged(object sender, EventArgs e)
+        {
+            if (comboBox1.Text.Equals("GHz"))
+            {
+                textBox15.Enabled = false;
+                textBox22.Enabled = false;
+                isHighFrequency = true;
+            }
+            else if (textBox20.Text.Equals(""))
+            {
+                textBox15.Enabled = true;
+                textBox22.Enabled = true;
+            }
+            else if (Convert.ToDouble(textBox20.Text) > 255 && comboBox1.Text.Equals("MHz"))
+            {
+                textBox15.Enabled = false;
+                textBox22.Enabled = false;
+                isHighFrequency = true;
+            }
+            else
+            {
+                textBox15.Enabled = true;
+                textBox22.Enabled = true;
+                isHighFrequency = false;
+            }
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBox1.Text.Equals("GHz"))
+            {
+                textBox15.Enabled = false;
+                textBox22.Enabled = false;
+                isHighFrequency = true;
+            }
+            else if (textBox20.Text.Equals(""))
+            {
+                textBox15.Enabled = true;
+                textBox22.Enabled = true;
+            }
+            else if (Convert.ToDouble(textBox20.Text) > 255 && comboBox1.Text.Equals("MHz"))
+            {
+                textBox15.Enabled = false;
+                textBox22.Enabled = false;
+                isHighFrequency = true;
+            }
+            else
+            {
+                textBox15.Enabled = true;
+                textBox22.Enabled = true;
+                isHighFrequency = false;
+            }
+        }
 
         private void button2_Click(object sender, EventArgs e) //Clear
         {
@@ -173,7 +193,6 @@ namespace WindowsFormsApp1
 
             listBox1.Items.Clear();
             measuredFrequencies.Clear();
-
         }
 
 
