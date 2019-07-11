@@ -43,3 +43,7 @@ C:\Users\gokhanhalkman\source\repos\SparkGUI\WindowsFormsApp1\obj\Debug\WindowsF
 C:\Users\gokhanhalkman\source\repos\SparkGUI\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.exe.config
 C:\Users\gokhanhalkman\source\repos\SparkGUI\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.exe
 C:\Users\gokhanhalkman\source\repos\SparkGUI\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.pdb
+C:\Users\gokhanhalkman\source\repos\SparkGUI\WindowsFormsApp1\bin\Debug\EPPlus.dll
+C:\Users\gokhanhalkman\source\repos\SparkGUI\WindowsFormsApp1\bin\Debug\EPPlus.xml
+C:\Users\gokhanhalkman\source\repos\SparkGUI\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.CopyComplete
+C:\Users\gokhanhalkman\source\repos\SparkGUI\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.Form5_cppTest.resources
